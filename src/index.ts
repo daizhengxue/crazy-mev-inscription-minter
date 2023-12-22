@@ -21,70 +21,44 @@ const GWEI = 10n ** 9n;
  //const inscribe = "0x646174613a2c7b2270223a226572632d3230222c226f70223a226d696e74222c227469636b223a226d6576222c22616d74223a2231303030227d";
  //const to_address = "0x31761aA5BDDAFCb6B39D3EA69043C24096Fe5ddC";
  //replace the inscribe data and to address with your own
-
 const inscribe = "Input your data here";
 const to_address = "input your address here";
 
 async function main() {
-  const flashbotsProvider = await FlashbotsBundleProvider.create(provider, Wallet.createRandom(), FLASHBOTS_ENDPOINT)
-  provider.on('block', async (blockNumber) => {
-    console.log(blockNumber)
-
-// input your transaction here and you can try input as much as you want for example you can input 10 transactions in one bundle
-// also change the to address to the contract address you want to interact with
-    const bundleSubmitResponse = await flashbotsProvider.sendBundle(
-      [
-        {
-
-          transaction: {
-            chainId: CHAIN_ID,
-            type: 2,
-            value: 0,
-            data: inscribe,
-            maxFeePerGas: GWEI * 15n,
-            maxPriorityFeePerGas: GWEI * 5n,
-            to: to_address
-          },
-          signer: wallet
+    const flashbotsProvider = await FlashbotsBundleProvider.create(provider, Wallet.createRandom(), FLASHBOTS_ENDPOINT);
+  
+    provider.once('block', async (blockNumber) => {
+      console.log(`Current block number: ${blockNumber}`);
+  
+      // 定义交易
+      const transaction = {
+        transaction: {
+          chainId: CHAIN_ID,
+          type: 2,
+          value: 0,
+          data: inscribe,
+          maxFeePerGas: GWEI * 15n,
+          maxPriorityFeePerGas: GWEI * 5n,
+          to: to_address
         },
-        {
+        signer: wallet
+      };
 
-          transaction: {
-            chainId: CHAIN_ID,
-            type: 2,
-            value: 0,
-            data: inscribe,
-            maxFeePerGas: GWEI * 15n,
-            maxPriorityFeePerGas: GWEI * 5n,
-            to: to_address
-          },
-          signer: wallet
-        }
-        /*,this is an example of how to send multiple transactions in one bundle.
-        {
-          transaction: {
-            chainId: CHAIN_ID,
-            type: 2,
-            value: 0,
-            data: "0x646174613a2c7b2270223a226572632d3230222c226f70223a226d696e74222c227469636b223a226d6576222c22616d74223a2231303030227d",
-            maxFeePerGas: GWEI * 15n,
-            maxPriorityFeePerGas: GWEI * 5n,
-            to: "0x31761aA5BDDAFCb6B39D3EA69043C24096Fe5ddC"
-          },
-          signer: wallet
-        }
-        }*/
-      ],  blockNumber + 1
-    )
+      const transactions = Array(15).fill(transaction);
 
-    // By exiting this function (via return) when the type is detected as a "RelayResponseError", TypeScript recognizes bundleSubmitResponse must be a success type object (FlashbotsTransactionResponse) after the if block.
-    if ('error' in bundleSubmitResponse) {
-      console.warn(bundleSubmitResponse.error.message)
-      return
-    }
- 
-    console.log(await bundleSubmitResponse.simulate()) 
-  })
-}
+      // attempt to send the bundle for the next 8 blocks
+      for (let i = 1; i <= 8; i++) {
+        const targetBlockNumber = blockNumber + i;
+        const bundleResponse = await flashbotsProvider.sendBundle(transactions, targetBlockNumber);
 
-main();
+      if ('error' in bundleResponse) {
+        console.error(`Error submitting bundle for block ${targetBlockNumber}: ${bundleResponse.error.message}`);
+      } else {
+        console.log(`Bundle submitted for block ${targetBlockNumber}`);
+      }
+
+      }
+    });
+  }
+  
+  main();
