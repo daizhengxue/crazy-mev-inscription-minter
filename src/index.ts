@@ -4,7 +4,7 @@ import 'dotenv/config';
 
 const CHAIN_ID = 5;//for goerli
 const provider = new providers.InfuraProvider(CHAIN_ID,process.env.API_KEY)
-//const provider = new providers.JsonRpcProvider("https://ethereum-goerli.s.chainbase.online/v1/chainbase-api-key")
+//const provider = new providers.JsonRpcProvider(`https://ethereum-goerli.s.chainbase.online/v1/${process.env.Chainbase_API_KEY}`);
 
 const FLASHBOTS_ENDPOINT = "https://relay-goerli.flashbots.net";
 
@@ -34,8 +34,6 @@ async function main() {
             value: 0,
             //data: `data:,{"p":"erc-20","op":"mint","tick":"mev","amt":"1000"}`
             data: "0x646174613a2c7b2270223a226572632d3230222c226f70223a226d696e74222c227469636b223a226d6576222c22616d74223a2231303030227d",
-            //maxFeePerGas: priorityFee.add(maxBaseFeeInFutureBlock),
-            //maxPriorityFeePerGas: priorityFee,
             maxFeePerGas: GWEI * 15n,
             maxPriorityFeePerGas: GWEI * 5n,
             to: "0x31761aA5BDDAFCb6B39D3EA69043C24096Fe5ddC"
@@ -54,7 +52,8 @@ async function main() {
             to: "0x31761aA5BDDAFCb6B39D3EA69043C24096Fe5ddC"
           },
           signer: wallet
-        },
+        }
+        /*,
         {
 
           transaction: {
@@ -80,7 +79,7 @@ async function main() {
             to: "0x31761aA5BDDAFCb6B39D3EA69043C24096Fe5ddC"
           },
           signer: wallet
-        }
+        }*/
       ],  blockNumber + 1
     )
 
