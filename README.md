@@ -1,28 +1,27 @@
-# Flashbots searcher-minter
+# crazy-mev-inscription-minter
 
-This repository contains a very simple demo application of [Flashbots](https://docs.flashbots.net), which allows arbitrary submission of a single transaction to Flashbots. This could be used for many simple purposes, but in the demonstration, the goal was to mint an NFT.
+This repository showcases a specialized application leveraging [Flashbots](https://docs.flashbots.net) to bundle transactions, specifically focused on mass minting of inscriptions. The core functionality revolves around using Flashbots' bundle capabilities to efficiently and effectively execute multiple transactions in a batch, making it ideal for tasks like minting inscriptions en masse.
 
-# Video Live Coding Demo
+## How to Run
 
-You can find a walkthrough of Flashbots and the creation of this NFT minting bot here:
+To begin, you need to acquire some [Goerli](https://goerli.etherscan.io/) ETH in your wallet, which can be obtained from a [faucet](https://faucet.goerli.mudit.blog/). Once you have Goerli ETH, extract the private key of your wallet. In MetaMask, this can be found under `Account Details -> Export Private Key`. This private key will be used as the `WALLET_PRIVATE_KEY` in the following steps.
 
-[YouTube - Using Flashbots to Mint NFTs on Ethereum - Part 1](https://www.youtube.com/watch?v=1ve1YIpDs_I)
-
-# How to run
-
-Get some [Goerli](https://goerli.etherscan.io/) ETH on a wallet (you'll need a [faucet](https://faucet.goerli.mudit.blog/)). Extract that Goerli wallet's private key (in MetaMask `Account Details -> Export Private Key`), use that value below for `WALLET_PRIVATE_KEY`.
-
-### Note:  It is EXTREMELY dangerous to deal with private keys in this manner, but bots require access to these keys to function. Be careful when using raw private keys that own mainnet ETH or other valuable assets. Keep as little value in these "hot" accounts as possible.
+### Important Safety Note:
+Handling raw private keys is extremely risky, especially if the keys are associated with accounts holding mainnet ETH or other valuable assets. Always exercise caution, and keep minimal value in these "hot" wallets.
 
 ```shell
 npm install
-WALLET_PRIVATE_KEY=0x1d9a.................. npx ts-node src/index.ts
+
+WALLET_PRIVATE_KEY= 0xcc......... npx ts-node src/index.ts
 ```
 
-# Goerli Contract Addresses
+This script will use the Flashbots bundle functionality to package and submit transactions for minting inscriptions, demonstrating a real-world application of batch transaction processing.
 
-* input: `data:,{"p":"erc-20","op":"mint","tick":"mev","amt":"1000"}`
+## Goerli Contract Addresses
 
-# Where can I learn more?
+- Example input for minting: `data:,{"p":"erc-20","op":"mint","tick":"mev","amt":"1000"}`
 
-Check out [docs.flashbots.net](https://docs.flashbots.net).
+## Where Can I Learn More?
+
+For more detailed information about Flashbots and their implementation, visit [docs.flashbots.net](https://docs.flashbots.net).
+
