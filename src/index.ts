@@ -30,7 +30,7 @@ async function main() {
     provider.once('block', async (blockNumber) => {
       console.log(`Current block number: ${blockNumber}`);
   
-      // 定义交易
+      // identify the block we want to send the bundle for
       const transaction = {
         transaction: {
           chainId: CHAIN_ID,
